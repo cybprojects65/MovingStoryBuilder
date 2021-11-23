@@ -168,7 +168,8 @@ public class ValueChain {
 		
 		// score all coordinates based on the largest cluster
 		Clusterer cluster = new Clusterer();
-		allCoordinatesFitness = cluster.clusterCoordinates(allCoordinates);
+		//allCoordinatesFitness = cluster.clusterCoordinates(allCoordinates);
+		allCoordinatesFitness = cluster.clusterCoordinatesStatistical(allCoordinates);
 		
 		System.out.println("# END - CLUSTERING COORDINATES #");
 		

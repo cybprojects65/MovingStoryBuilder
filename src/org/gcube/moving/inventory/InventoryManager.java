@@ -74,12 +74,12 @@ public class InventoryManager {
 					System.out.println("###END - SAVING THE STORY###");
 					
 					long t1 = System.currentTimeMillis();
-					long elapsed = t1-t0;
-					System.out.println("ELAPSED TIME TO BUILD STORY "+j+":"+elapsed+"ms");
+					double elapsed = (double)(t1-t0)/(60*1000);
+					System.out.println("ELAPSED TIME TO BUILD STORY "+j+":"+elapsed+" min");
 		    	}
 		    		
 		    	j++;
-		    	if (j>1)
+		    	if (j>4)
 		    		break;
 		      }
 		      

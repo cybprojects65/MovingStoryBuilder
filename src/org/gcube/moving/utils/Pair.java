@@ -16,7 +16,7 @@ public class Pair implements Serializable{
 	}
 	
 	public String toString() {
-		return longitude+";"+latitude;
+		return latitude+","+longitude;
 	}
 
 	
