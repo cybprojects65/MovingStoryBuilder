@@ -48,14 +48,13 @@ public class WikidataExplorer {
 		} else {
 
 			String ent = prepareEntity(entity);
-			System.out.println("Analysing entity written as "+ent);
+			System.out.println("Wikidata - Analysing entity written as "+ent);
 			uri = analyseResponse(ent);
 			if (uri.length()==0) {
-				
 				ent = entity.trim();
 				ent = ent.toLowerCase();
 				ent = ent.replaceAll(" +", " ");
-				System.out.println("Re-analysing entity written as "+ent);
+				System.out.println("Wikidata - no luck - Re-analysing entity written as "+ent);
 				uri = analyseResponse(ent);
 				
 			}
@@ -69,12 +68,13 @@ public class WikidataExplorer {
 
 		}
 
-		System.out.println("Wikidata: " + entity + "->" + uri + " | coordinates "+wikidataPair );
+		System.out.println("Wikidata result: " + entity + "->" + uri + " | coordinates: "+wikidataPair );
 		return uri;
 	}
 
 	public String analyseResponse(String ent) throws Exception{
-		
+		String uri = "";
+		try {
 		String q = "SELECT DISTINCT ?entity ?label WHERE {?entity rdfs:label \"" + ent
 				+ "\"@en . SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\" }}";
 
@@ -84,11 +84,13 @@ public class WikidataExplorer {
 		// System.out.println("Query:\n" + url);
 
 		String response = HTTPRequests.getRequest(url);
-		String uri = parseResponse(response);
+		uri = parseResponse(response);
 
 		if (uri.length() == 0 || !isValid(ent, uri))
 			uri = "";
-		
+		}catch(Exception e) {
+			System.out.println("Wikidata - Error as answer to the query "+e.getLocalizedMessage());
+		}
 		return uri;
 	}
 	
@@ -157,10 +159,10 @@ public class WikidataExplorer {
 			String response = HTTPRequests.getRedirectedPage(uri);
 			String wikipage = new String(response);
 			
-			System.out.println("wikidata check:\n" + response);
+			//System.out.println("wikidata check:\n" + response);
 
 			if (response.toLowerCase().contains("wikimedia disambiguation page")) {
-				System.out.println("Ambiguous content");
+				System.out.println("Term "+entity+" corresponds to disambiguation page -> INVALID");
 				return false;
 			} else {
 				try {
@@ -169,18 +171,20 @@ public class WikidataExplorer {
 					response = response.substring(response.indexOf("title=\"") + "title=\"".length());
 					response = response.substring(0, response.indexOf("\""));
 					response = response.trim();
-					System.out.println("NAME IN ENGLISH WIKI:" + response);
+					System.out.println("Wikidata - there is a NAME IN ENGLISH on WIKIPEDIA:" + response);
 				} catch (Exception e) {
-					System.out.println("Error finding the wikipedia en page:" + e.getLocalizedMessage());
+					System.out.println("Error finding the wikipedia en page:" + e.getLocalizedMessage()+"->INVALID");
 
 				}
 				if (entity.equalsIgnoreCase(response)) {
+					System.out.println("Wikidata - THE NAME IN ENGLISH on WIKIPEDIA CORRESPONDS TO THE ENTITY "+entity+"->VALID");
 					extractCoordinates(wikipage);
 					return true;
 				}
-				else
+				else {
+					System.out.println("Wikidata - THE NAME IN ENGLISH on WIKIPEDIA DOES NOT EXIST OR DOES NOT CORRESPOND TO THE ENTITY "+entity+"->INVALID");
 					return false;
-
+				}
 			}
 
 		} catch (Exception e) {

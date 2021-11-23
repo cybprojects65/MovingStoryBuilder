@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.gcube.moving.geocoding.CoordinateDistributor;
 import org.gcube.moving.semantic.WikidataExplorer;
 import org.gcube.moving.utils.Pair;
 
@@ -69,6 +70,22 @@ public class Event {
 		return row;
 	}
 
+	public Pair decideBestCoordinatesWithRedistribution(List<Pair> allCoordinates, List<Boolean> allCoordinatesFitness,
+			List<Pair> assignedCoordinates) {
+		CoordinateDistributor cd = new CoordinateDistributor();
+		Pair best = cd.decideBestCoordinates(allCoordinates, allCoordinatesFitness, assignedCoordinates, candidateCoordinates, title);
+		assignCoordinates(best.longitude,best.latitude);
+		return best; 
+	}
+	
+	public Pair assignRedistributedCoordinates(List<Pair> allCoordinates, List<Boolean> allCoordinatesFitness,
+			List<Pair> assignedCoordinates) {
+		CoordinateDistributor cd = new CoordinateDistributor();
+		Pair best = cd.redistributeCoordinates(allCoordinates, allCoordinatesFitness, assignedCoordinates, title, new Pair(longitude,latitude));
+		assignCoordinates(best.longitude,best.latitude);
+		return best;
+	}
+	
 	public Pair decideBestCoordinates(List<Pair> allCoordinates, List<Boolean> allCoordinatesFitness,
 			List<Pair> assignedCoordinates) {
 

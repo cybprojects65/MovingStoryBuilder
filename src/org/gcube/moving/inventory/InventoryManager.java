@@ -24,14 +24,15 @@ public class InventoryManager {
 		      List<String[]> r = reader.readAll();
 		      int j = 0;
 		      for (String[] row:r) {
+		    	  
+		    	  long t0 = System.currentTimeMillis();
+		    	  
 		    	  int i = 0;
 		    	for (String rowi:row) {
 		    		row[i] = NLPHubCaller.cleanCharacters(rowi).replace("\"", "'");
 		    		//System.out.println("Row"+i+" : "+row[i]);
-		    		
 		    		i++;
 		    	}
-		    	
 		    	
 		    	if (j==0) {
 		    		i=0;
@@ -44,7 +45,9 @@ public class InventoryManager {
 		    		}
 		    	}
 		    	else {
+		    		System.out.println("####STORY NUMBER "+j+" OF "+r.size()+"####");
 		    		
+		    		System.out.println("###BUILDING STORY BASED ON THE CSV ROW###");
 		    		ValueChain vc = new ValueChain();
 		    		vc.parseHeader(header);
 		    		
@@ -53,10 +56,13 @@ public class InventoryManager {
 		    			vc.analyseField(rowi, i);
 		    			i++;
 		    		}
+		    		System.out.println("###END - BUILDING STORY BASED ON THE CSV ROW###");
 		    		
-		    		System.out.println("Producing events");
-		    		
+		    		System.out.println("###ENRICHING EVENT INFORMATION###");
 		    		String story = vc.produceEvents();
+		    		System.out.println("###END - ENRICHING EVENT INFORMATION###");
+		    		
+		    		System.out.println("###SAVING THE STORY###");
 		    		story = "title,description,objects,objectlinks,lon,lat"+"\n"+story;
 		    		System.out.println(story);
 		    		File storyFile = new File("stories/"+j+".csv");
@@ -65,7 +71,11 @@ public class InventoryManager {
 		    		writer.write(story.replace("\t", ","));
 					writer.close();
 					System.out.println("Story "+j+" of "+r.size()+" finished");
-		    		
+					System.out.println("###END - SAVING THE STORY###");
+					
+					long t1 = System.currentTimeMillis();
+					long elapsed = t1-t0;
+					System.out.println("ELAPSED TIME TO BUILD STORY "+j+":"+elapsed+"ms");
 		    	}
 		    		
 		    	j++;

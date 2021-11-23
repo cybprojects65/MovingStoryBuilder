@@ -122,11 +122,6 @@ public class ValueChain {
 			System.out.println("Field " + field + " (" + header + ")" + " -> " + eventLabel);
 		Event e = events.get(eventLabel);
 		String description = getDescription(row, field);
-		/*
-		 * if (isDescriptive(row)) { ObjectExtractor oe = new ObjectExtractor();
-		 * LinkedHashSet<String> objects = oe.extractObjects(description, true);
-		 * e.updateObjects(objects); }
-		 */
 		if (isTitle(row))
 			e.setTitle(description);
 		else
@@ -141,6 +136,9 @@ public class ValueChain {
 
 	public String produceEvents() throws Exception {
 
+		//extract and filter objects extracted by the nlp hub
+		
+		System.out.println("# ENRICHING OBJECTS WITH NE, IRI, AND COORDINATES #");
 		for (String label : events.keySet()) {
 
 			Event e = events.get(label);
@@ -154,40 +152,61 @@ public class ValueChain {
 
 				e.updateObjects(oe.allobjs);
 				e.filterObjectswithIRI();
-				
+
 				List<Pair> ps = e.inferCoordinates();
-				if (ps.size()>1 || ps.get(0).longitude!=0)
+				if (ps.size() > 1 || ps.get(0).longitude != 0)
 					allCoordinates.addAll(ps);
-				
+
 				System.out.println("Event coordinates " + e.title + "->" + ps);
 				System.out.println("Adding event " + label);
 			}
 
 		}
-
-		StringBuffer sb = new StringBuffer();
-
-		if (!simulatecoordinates) {
-			// score all coordinates based on the largest cluster
-			Clusterer cluster = new Clusterer();
-			allCoordinatesFitness = cluster.clusterCoordinates(allCoordinates);
-
-			for (String label : events.keySet()) {
-				Event e = events.get(label);
-				Pair bestPair = e.decideBestCoordinates(allCoordinates, allCoordinatesFitness, assignedCoordinates);
+		System.out.println("# END - ENRICHING OBJECTS WITH NE, IRI, AND COORDINATES #");
+		
+		System.out.println("# CLUSTERING COORDINATES #");
+		
+		// score all coordinates based on the largest cluster
+		Clusterer cluster = new Clusterer();
+		allCoordinatesFitness = cluster.clusterCoordinates(allCoordinates);
+		
+		System.out.println("# END - CLUSTERING COORDINATES #");
+		
+		System.out.println("# OPTIMIZE COORDINATE ASSIGNED TO GEOSPATIAL EVENTS #");
+		
+		for (String label : events.keySet()) {
+			Event e = events.get(label);
+			// Pair bestPair = e.decideBestCoordinates(allCoordinates,
+			// allCoordinatesFitness, assignedCoordinates);
+			Pair bestPair = e.decideBestCoordinatesWithRedistribution(allCoordinates, allCoordinatesFitness,
+					assignedCoordinates);
+			if (bestPair.longitude!=0 && bestPair.latitude!=0)
 				assignedCoordinates.add(bestPair);
-				sb.append(e.toString() + "\n");
-			}
-
-		} else {// score all coordinates based on the largest cluster
-
-			for (String label : events.keySet()) {
-				Event e = events.get(label);
-				sb.append(e.toString() + "\n");
-			}
 		}
 
+		System.out.println("# END - OPTIMIZE COORDINATE ASSIGNED TO GEOSPATIAL EVENTS #");
+		
+		System.out.println("# REDISTRIBUTED COORDINATES TO NON-GEOSPATIAL EVENTS #");
+		//redistribute residual coordinates
+		for (String label : events.keySet()) {
+			Event e = events.get(label);
+			Pair bestPair = e.assignRedistributedCoordinates(allCoordinates, allCoordinatesFitness,
+					assignedCoordinates);
+			if (bestPair.longitude!=0 && bestPair.latitude!=0)
+				assignedCoordinates.add(bestPair);
+		}
+		System.out.println("# END - REDISTRIBUTED COORDINATES TO NON-GEOSPATIAL EVENTS #");
+		
+		System.out.println("# TRANSFORMING EVENT INTO STRINGS #");
+		//report all events
+		StringBuffer sb = new StringBuffer();
+		for (String label : events.keySet()) {
+			Event e = events.get(label);
+			sb.append(e.toString() + "\n");
+		}
 		System.out.println("");
+		System.out.println("# END - TRANSFORMING EVENT INTO STRINGS #");
+		
 		return sb.toString();
 	}
 
@@ -246,7 +265,7 @@ public class ValueChain {
 		System.out.println("");
 		return sb.toString();
 	}
-	
+
 	public List<Pair> inferCoordinates(LinkedHashSet<String> objects) {
 
 		if (simulatecoordinates) {
