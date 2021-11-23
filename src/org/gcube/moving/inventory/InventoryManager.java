@@ -79,7 +79,7 @@ public class InventoryManager {
 		    	}
 		    		
 		    	j++;
-		    	if (j>4)
+		    	if (j>10)
 		    		break;
 		      }
 		      
