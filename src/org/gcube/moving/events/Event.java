@@ -64,8 +64,29 @@ public class Event {
 		String links = wikidatalinks.toString().replace("[", "").replace("]", "");
 
 		String sep = "\t";
-
-		String row = "\"" + title + "\"" + sep + "\"" + description + "\"" + sep + "\"" + objs + "\"" + sep + "\""
+		String titleEvent = new String(title);
+		if (titleEvent.contains("N/A"))
+			titleEvent = titleEvent.replace("N/A", "");
+		else
+			titleEvent = titleEvent.replace("Value Chain", "");
+		titleEvent = titleEvent.trim();
+		if (titleEvent.endsWith("."))
+			titleEvent = titleEvent.substring(0,titleEvent.length()-1);
+		
+		
+		String descriptionEvent = new String(description);
+		descriptionEvent = descriptionEvent.replace(". N/A.", ".");
+		descriptionEvent = descriptionEvent.replace("is N/A", "is unspecified");
+		descriptionEvent = descriptionEvent.replace("related to N/A.", "related to the whole VC.");
+		descriptionEvent = descriptionEvent.replace("About the LAU: N/A.", "LAU is unspecified");
+		descriptionEvent = descriptionEvent.replace("About the LAU: N/A.", "LAU is unspecified");
+		descriptionEvent = descriptionEvent.replace("has been N/A", "is unspecified");
+		descriptionEvent = descriptionEvent.replace("In this region protected areas N/A present.", "");
+		descriptionEvent = descriptionEvent.replace("..", ".");
+		if (descriptionEvent.equals("N/A"))
+			descriptionEvent = "";
+		descriptionEvent=descriptionEvent.trim();
+		String row = "\"" + titleEvent + "\"" + sep + "\"" + descriptionEvent + "\"" + sep + "\"" + objs + "\"" + sep + "\""
 				+ links + "\"" + sep + "\"" + longitude + "\"" + sep + "\"" + latitude + "\"";
 		return row;
 	}
