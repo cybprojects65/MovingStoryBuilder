@@ -72,6 +72,10 @@ public class Clusterer {
 			if (p.longitude>thrx0 && p.longitude<thrx1 && p.latitude>thry0 && p.latitude<thry1)
 				good = true;
 			
+			//exclude american
+			if (p.longitude<-35 || p.longitude>48)
+				good = false;
+			
 			if (good) {
 				System.out.println("GOOD->" + p);
 				allbad=false;

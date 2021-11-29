@@ -27,7 +27,7 @@ public class InventoryManager {
 		      for (String[] row:r) {
 		    	/*debugging*/
 		    	  /*
-		    	  if (j>0 && j!=314)
+		    	  if (j>0 && j!=443)
 		    	  {
 		    		  j++;
 		    		  continue;
