@@ -21,7 +21,7 @@ public class ArrangeStoriesToMap {
 		
 		System.out.println("Parsing all stories..");
 		
-		uberStory.append("story_number,longitude,latitude\n");
+		uberStory.append("story_name,story_number,longitude,latitude\n");
 		
 		for (File story:allStories) {
 			
@@ -32,13 +32,18 @@ public class ArrangeStoriesToMap {
 				
 				List<String[]> allLines = reader.readAll();
 				int lineCounter = 0;
+				String storyfullName = "";
 				for (String []line:allLines) {
 					
 					if (lineCounter>0) {
-						
+						if (lineCounter==1)
+						{
+							storyfullName = "Title: "+line[0]+". "+line [1].substring(0,line[1].indexOf("."))+".";
+							storyfullName=storyfullName.replace(",", "");
+						}
 						double lon = Double.parseDouble(line[line.length-2]);
 						double lat = Double.parseDouble(line[line.length-1]);
-						uberStory.append(storyName+","+lon+","+lat+"\n");
+						uberStory.append(storyfullName+","+storyName+","+lon+","+lat+"\n");
 						
 					}
 					
