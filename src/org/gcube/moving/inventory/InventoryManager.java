@@ -21,9 +21,18 @@ public class InventoryManager {
 		try (CSVReader reader = new CSVReader(new FileReader("Dataset_VC card_Inventory_102021_db.csv"))) {
 			  String header = "";
 			  
+			    
 		      List<String[]> r = reader.readAll();
 		      int j = 0;
 		      for (String[] row:r) {
+		    	/*debugging*/
+		    	  /*
+		    	  if (j>0 && j!=314)
+		    	  {
+		    		  j++;
+		    		  continue;
+		    	  }
+		    		*/
 		    	  
 		    	  long t0 = System.currentTimeMillis();
 		    	  
@@ -79,8 +88,8 @@ public class InventoryManager {
 		    	}
 		    		
 		    	j++;
-		    	if (j>10)
-		    		break;
+		    	//if (j>1)
+		    		//break;
 		      }
 		      
 		  }

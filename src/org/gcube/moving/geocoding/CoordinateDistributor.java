@@ -21,7 +21,10 @@ public class CoordinateDistributor {
 			List<Pair> goodCandidates = new ArrayList();
 			for (Pair candidate : eventCoordinates) {
 				int idx = Pair.getIndex(allCoordinates, candidate);
-				boolean b = allCoordinatesFitness.get(idx);
+				//System.out.println("searching "+candidate+" in "+allCoordinates);
+				boolean b = false;
+				if (idx>-1)
+					b = allCoordinatesFitness.get(idx);
 				if (b)
 					goodCandidates.add(candidate);
 			}
@@ -39,7 +42,7 @@ public class CoordinateDistributor {
 
 				int nocc = Pair.contains(allCoordinates, candidate);
 				goodCandidatesNocc.add(nocc);
-				if (nocc < lowestoccs) {
+				if (nocc <= lowestoccs) {
 					lowestoccs = nocc;
 					lowestPair = new Pair(candidate.longitude, candidate.latitude);
 					if (nocc <= 1)

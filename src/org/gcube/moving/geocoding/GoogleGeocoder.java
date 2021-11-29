@@ -26,8 +26,9 @@ public class GoogleGeocoder {
 		String geocoding = xmlcached;
 
 		if (xmlcached == null) {
-			String googleKey = Files.readString(new File("geocodekey.txt").toPath()); // https://console.cloud.google.com/apis/credentials?project=geocoding-332513
-
+			//String googleKey = Files.readString(new File("geocodekey.txt").toPath()); // https://console.cloud.google.com/apis/credentials?project=geocoding-332513
+			String googleKey = "";
+			
 			String request = "https://maps.googleapis.com/maps/api/geocode/xml?address="
 					+ URLEncoder.encode(address, "UTF-8") + "&key=" + googleKey;
 

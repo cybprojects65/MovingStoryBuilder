@@ -154,7 +154,7 @@ public class ValueChain {
 				e.filterObjectswithIRI();
 
 				List<Pair> ps = e.inferCoordinates();
-				if (ps.size() > 1 || ps.get(0).longitude != 0)
+				if (ps.size() > 1 || (ps.get(0).longitude != 0))
 					allCoordinates.addAll(ps);
 
 				System.out.println("Event coordinates " + e.title + "->" + ps);
