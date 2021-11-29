@@ -11,8 +11,7 @@ public class ArrangeStoriesToMap {
 
 	
 	public static void main(String[] args) throws Exception {
-		
-		
+				
 		File storiesFolder = new File("stories/");
 		File uberStoryFile = new File("uberstory.csv");
 		
