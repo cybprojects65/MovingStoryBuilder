@@ -19,8 +19,12 @@ public class Event {
 	public List<Pair> candidateCoordinates = new ArrayList();
 
 	public double longitude;
+	
 	public double latitude;
 
+	public double barycenterlongitude;
+	public double barycenterlatitude;
+	
 	public Event(String title) {
 		this.title = title;
 		this.description = "";
@@ -49,6 +53,37 @@ public class Event {
 		this.latitude = latitude;
 	}
 
+	public void assignBarycenterCoordinates(double longitude, double latitude) {
+		this.barycenterlongitude= longitude;
+		this.barycenterlatitude = latitude;
+	}
+	
+	public Pair deduceBarycenter() throws Exception{
+		
+		String toSearch = "The MOVING reference member state of this VC is";
+		String mainPlace = description.substring(description.indexOf(toSearch)+toSearch.length()).trim();
+		mainPlace =mainPlace.substring(0,mainPlace.indexOf("."));
+		mainPlace = mainPlace.replaceAll("[0-9]+", "").trim();
+		mainPlace = mainPlace.replace("UCO", "").replace("HUTTON", "").replace("ADEGUA", "").replace("UNIMOL and UNIPI", "").
+				replace("INRAE", "").replace("ESTRELA", "").replace("VINIDEA", "").replace("CCVD", "").replace("NMK", "North Macedonia").replace("SKANDINAVIAN", "Scandinavia");
+		
+		
+		System.out.println("Main Place of this event:"+mainPlace);
+		WikidataExplorer explorer = new WikidataExplorer();
+		Pair p = explorer.getCoordinates(mainPlace);
+		
+		if (p!=null && p.longitude!=0) {
+			System.out.println("BARYCENTER:"+mainPlace+"->"+p);
+			return new Pair(p.longitude,p.latitude);
+		}else {
+			Pair pp = new Pair(this.longitude,this.latitude);
+			System.out.println("NO BARYCENTER:"+mainPlace+"!->"+pp);
+			return pp;
+		}
+		
+	}
+	
+	
 	public void addCandidateCoordinates(List<Pair> coords) {
 
 		candidateCoordinates.addAll(coords);
@@ -86,8 +121,11 @@ public class Event {
 		if (descriptionEvent.equals("N/A"))
 			descriptionEvent = "";
 		descriptionEvent=descriptionEvent.trim();
+		
 		String row = "\"" + titleEvent + "\"" + sep + "\"" + descriptionEvent + "\"" + sep + "\"" + objs + "\"" + sep + "\""
-				+ links + "\"" + sep + "\"" + longitude + "\"" + sep + "\"" + latitude + "\"";
+				+ links + "\"" + sep + "\"" + longitude + "\"" + sep + "\"" + latitude + "\""+sep+"\""+barycenterlongitude+"\""+sep+"\""+barycenterlatitude+"\"";
+		
+		
 		return row;
 	}
 

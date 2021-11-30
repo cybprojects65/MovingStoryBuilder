@@ -27,7 +27,7 @@ public class InventoryManager {
 		      for (String[] row:r) {
 		    	/*debugging*/
 		    	  /*
-		    	  if (j>0 && j!=443)
+		    	  if (j>0 && j!=299)
 		    	  {
 		    		  j++;
 		    		  continue;
@@ -72,7 +72,7 @@ public class InventoryManager {
 		    		System.out.println("###END - ENRICHING EVENT INFORMATION###");
 		    		
 		    		System.out.println("###SAVING THE STORY###");
-		    		story = "title,description,objects,objectlinks,lon,lat"+"\n"+story;
+		    		story = "title,description,objects,objectlinks,lon,lat,barycenter_lon,barycenter_lat"+"\n"+story;
 		    		System.out.println(story);
 		    		File storyFile = new File("stories/"+j+".csv");
 		    		FileOutputStream fos = new FileOutputStream(storyFile);
