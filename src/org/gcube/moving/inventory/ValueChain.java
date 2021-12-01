@@ -201,9 +201,17 @@ public class ValueChain {
 		System.out.println("# TRANSFORMING EVENT INTO STRINGS #");
 		//report all events
 		StringBuffer sb = new StringBuffer();
+		int nevents = 0;
+		Pair barycenter = null;
+		System.out.println("");
 		for (String label : events.keySet()) {
 			Event e = events.get(label);
+			if (nevents==0) {
+				barycenter = e.deduceBarycenter();
+			}
+			e.assignBarycenterCoordinates(barycenter.longitude,barycenter.latitude);
 			sb.append(e.toString() + "\n");
+			nevents++;
 		}
 		System.out.println("");
 		System.out.println("# END - TRANSFORMING EVENT INTO STRINGS #");
@@ -241,27 +249,19 @@ public class ValueChain {
 		}
 
 		StringBuffer sb = new StringBuffer();
-
-		if (!simulatecoordinates) {
-			// score all coordinates based on the largest cluster
-			Clusterer cluster = new Clusterer();
-			allCoordinatesFitness = cluster.clusterCoordinates(allCoordinates);
-
-			for (String label : events.keySet()) {
-				Event e = events.get(label);
-				Pair bestPair = e.decideBestCoordinates(allCoordinates, allCoordinatesFitness, assignedCoordinates);
-				assignedCoordinates.add(bestPair);
-				e.filterObjectswithIRI();
-				sb.append(e.toString() + "\n");
+		int nevents = 0;
+		Pair barycenter = null;
+		for (String label : events.keySet()) {
+			Event e = events.get(label);
+			if (nevents==0) {
+				barycenter = e.deduceBarycenter();
 			}
-
-		} else {// score all coordinates based on the largest cluster
-
-			for (String label : events.keySet()) {
-				Event e = events.get(label);
+				
+				e.assignBarycenterCoordinates(barycenter.longitude,barycenter.latitude);
 				sb.append(e.toString() + "\n");
-			}
+				nevents++;
 		}
+		
 
 		System.out.println("");
 		return sb.toString();
