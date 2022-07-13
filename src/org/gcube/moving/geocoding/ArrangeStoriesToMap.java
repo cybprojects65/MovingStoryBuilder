@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import org.gcube.moving.events.Event;
 import org.gcube.moving.semantic.WikidataExplorer;
 import org.gcube.moving.utils.Pair;
 
@@ -44,7 +45,7 @@ public class ArrangeStoriesToMap {
 				List<String[]> allLines = reader.readAll();
 				int lineCounter = 0;
 				String storyfullName = "";
-				
+				String storyTitle = "";
 				
 				for (String[] line : allLines) {
 
@@ -53,16 +54,14 @@ public class ArrangeStoriesToMap {
 							// storyfullName = "Title: "+line[0]+". "+line
 							// [1].substring(0,line[1].indexOf("."))+".";
 							storyfullName = "Title: " + line[0]; // +". "+line [1];
+							storyTitle = line[0];
 							storylon = Double.parseDouble(line[line.length - 2]);
 							storylat = Double.parseDouble(line[line.length - 1]);
 							
 							String toSearch = "The MOVING reference member state of this VC is";
 							
 							String mainPlace = line [1].substring(line[1].indexOf(toSearch)+toSearch.length()).trim();
-							mainPlace =mainPlace.substring(0,mainPlace.indexOf("."));
-							mainPlace = mainPlace.replaceAll("[0-9]+", "").trim();
-							mainPlace = mainPlace.replace("UCO", "").replace("HUTTON", "").replace("ADEGUA", "").replace("UNIMOL and UNIPI", "").
-									replace("INRAE", "").replace("ESTRELA", "").replace("VINIDEA", "").replace("CCVD", "").replace("NMK", "North Macedonia").replace("SKANDINAVIAN", "Scandinavia");
+							mainPlace = Event.processPlaceName(mainPlace);
 							
 							System.out.println("Main Place:"+mainPlace);
 							places.add(mainPlace);
@@ -78,7 +77,15 @@ public class ArrangeStoriesToMap {
 							
 						}
 						if (line[1].length() > 0 && !line[1].equals("N/A")) {
-							String description = storyfullName + ". Description: " + line[1];
+							
+							String description = storyfullName+". " ;
+							if (storyTitle.equals(line[0]))
+								description = description+"Event: Story begin. ";
+							
+							else
+								description = description+"Event: "+line[0]+". ";
+							
+								description = description+ "Description: " + line[1];
 							description = description.replace(",", ";");
 							description = description.replaceAll(" +", " ");
 							String concepts = line[2].replace(",", ";");

@@ -17,23 +17,22 @@ public class InventoryManager {
 	public static void main(String args[]) throws Exception{
 		
 		ValueChain.simulatecoordinates = false;
-		
-		try (CSVReader reader = new CSVReader(new FileReader("Dataset_VC card_Inventory_102021_db.csv"))) {
+		//NOTES ON DATA PREPARATION: DELETE COMMAS IN THE COLUMN NAMES : "100," AND ", its specificity" 
+		//try (CSVReader reader = new CSVReader(new FileReader("Dataset_VC card_Inventory_102021_db_updated01122021.csv"))) {
+		try (CSVReader reader = new CSVReader(new FileReader("MOVING_VCs_DATASET_FINAL_V2.csv"))) {
 			  String header = "";
-			  
 			    
 		      List<String[]> r = reader.readAll();
 		      int j = 0;
 		      for (String[] row:r) {
 		    	/*debugging*/
 		    	  /*
-		    	  if (j>0 && j!=299)
+		    	  if (j>0 && j!=1)
 		    	  {
 		    		  j++;
 		    		  continue;
 		    	  }
 		    		*/
-		    	  
 		    	  long t0 = System.currentTimeMillis();
 		    	  
 		    	  int i = 0;

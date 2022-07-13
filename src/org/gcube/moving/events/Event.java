@@ -58,15 +58,21 @@ public class Event {
 		this.barycenterlatitude = latitude;
 	}
 	
+	public static String processPlaceName(String mainPlace) {
+		
+		mainPlace =mainPlace.substring(0,mainPlace.indexOf("."));
+		mainPlace = mainPlace.replace("_", " ");
+		mainPlace = mainPlace.replaceAll(" +", " ").trim();
+		mainPlace = mainPlace.replaceAll("[0-9]+", "").trim();
+		mainPlace = mainPlace.replace("UCO", "").replace("HUTTON", "").replace("ADEGUA", "").replace("UNIMOL and UNIPI", "").replace("UNIMOL & UNIPI","").
+				replace("INRAE", "").replace("ESTRELA", "").replace("VINIDEA", "").replace("CCVD", "").replace("NMK", "North Macedonia").replace("SKANDINAVIAN", "Scandinavia");
+		return mainPlace;
+	}
 	public Pair deduceBarycenter() throws Exception{
 		
 		String toSearch = "The MOVING reference member state of this VC is";
 		String mainPlace = description.substring(description.indexOf(toSearch)+toSearch.length()).trim();
-		mainPlace =mainPlace.substring(0,mainPlace.indexOf("."));
-		mainPlace = mainPlace.replaceAll("[0-9]+", "").trim();
-		mainPlace = mainPlace.replace("UCO", "").replace("HUTTON", "").replace("ADEGUA", "").replace("UNIMOL and UNIPI", "").
-				replace("INRAE", "").replace("ESTRELA", "").replace("VINIDEA", "").replace("CCVD", "").replace("NMK", "North Macedonia").replace("SKANDINAVIAN", "Scandinavia");
-		
+		mainPlace = processPlaceName(mainPlace);
 		
 		System.out.println("Main Place of this event:"+mainPlace);
 		WikidataExplorer explorer = new WikidataExplorer();
@@ -117,8 +123,17 @@ public class Event {
 		descriptionEvent = descriptionEvent.replace("About the LAU: N/A.", "LAU is unspecified");
 		descriptionEvent = descriptionEvent.replace("has been N/A", "is unspecified");
 		descriptionEvent = descriptionEvent.replace("In this region protected areas N/A present.", "");
+		if (descriptionEvent.trim().equals("are."))
+			descriptionEvent = "";
+		if (descriptionEvent.trim().equals("Yes"))
+			descriptionEvent = "";
+		
+		if (descriptionEvent.trim().startsWith("Yes,"))
+			descriptionEvent = descriptionEvent.replace("Yes,", "");
+		
+		
 		descriptionEvent = descriptionEvent.replace("..", ".");
-		if (descriptionEvent.equals("N/A"))
+		if (descriptionEvent.equals("N/A") || descriptionEvent.equals("N/A."))
 			descriptionEvent = "";
 		descriptionEvent=descriptionEvent.trim();
 		
