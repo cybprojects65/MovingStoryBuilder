@@ -37,7 +37,7 @@ public class CoordinateDistributor {
 			Pair lowestPair = null;
 
 			List<Integer> goodCandidatesNocc = new ArrayList();
-
+			//take the most characteristic place
 			for (Pair candidate : goodCandidates) {
 
 				int nocc = Pair.contains(allCoordinates, candidate);
