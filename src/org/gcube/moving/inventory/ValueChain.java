@@ -12,10 +12,12 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Random;
 
 import org.gcube.moving.clustering.Clusterer;
 import org.gcube.moving.events.Event;
 import org.gcube.moving.geocoding.GoogleGeocoder;
+import org.gcube.moving.nlphub.NLPHubCaller;
 import org.gcube.moving.utils.Pair;
 
 import com.opencsv.CSVReader;
@@ -25,6 +27,7 @@ public class ValueChain {
 	LinkedHashMap<String, Event> events = new LinkedHashMap<>();
 	Event[] eventArray = null;
 	String[] headersArray = null;
+	public String card_id;
 
 	public ValueChain() throws Exception {
 
@@ -113,7 +116,11 @@ public class ValueChain {
 
 		if (field.trim().length() == 0)
 			return;
-
+		
+		if (header.equals("Card ID")) {
+			this.card_id = field.trim();
+		}
+		
 		String row[] = getRow(header);
 		String eventLabel = getEventLabel(row);
 		if (field.length() > 10)
@@ -187,16 +194,25 @@ public class ValueChain {
 
 		System.out.println("# END - OPTIMIZE COORDINATE ASSIGNED TO GEOSPATIAL EVENTS #");
 		
-		System.out.println("# REDISTRIBUTED COORDINATES TO NON-GEOSPATIAL EVENTS #");
+		System.out.println("# REDISTRIBUTE COORDINATES TO NON-GEOSPATIAL EVENTS #");
 		//redistribute residual coordinates
 		for (String label : events.keySet()) {
 			Event e = events.get(label);
-			Pair bestPair = e.assignRedistributedCoordinates(allCoordinates, allCoordinatesFitness,
+			//check if LAU coords exist
+			Pair bestPair =getLAUCoordinates();
+			if (bestPair ==null)
+				bestPair = e.assignRedistributedCoordinates(allCoordinates, allCoordinatesFitness,
 					assignedCoordinates);
+			else {
+				if (e.longitude == 0 && e.latitude == 0) {
+					e.assignCoordinates(bestPair.longitude,bestPair.latitude);
+				}
+			}
 			if (bestPair.longitude!=0 && bestPair.latitude!=0)
 				assignedCoordinates.add(bestPair);
+			
 		}
-		System.out.println("# END - REDISTRIBUTED COORDINATES TO NON-GEOSPATIAL EVENTS #");
+		System.out.println("# END - REDISTRIBUTE COORDINATES TO NON-GEOSPATIAL EVENTS #");
 		
 		System.out.println("# TRANSFORMING EVENT INTO STRINGS #");
 		//report all events
@@ -219,6 +235,44 @@ public class ValueChain {
 		return sb.toString();
 	}
 
+	public Pair getLAUCoordinates() {
+		try {
+			List<String> allLAUs = Files.readAllLines(new File("LAU_per_story.csv").toPath());
+			for (String allLAURecord:allLAUs) {
+				if (allLAURecord.length()>0) {
+					String cardID_entry = allLAURecord.split(",")[1];
+					cardID_entry = NLPHubCaller.cleanCharacters(cardID_entry).replace("\"", "'");
+					cardID_entry = cardID_entry.trim();
+					
+					if (cardID_entry.equals(card_id)) {
+						String centroid = allLAURecord.substring(allLAURecord.indexOf("POINT "));
+						centroid = centroid.substring(0,centroid.indexOf(","));
+						//POINT (15.648804607839635 47.20873958185875)
+						centroid = centroid.replace("POINT", "").replace("(", "").replace(")", "");
+						centroid = centroid.trim();
+						double latitude = Double.parseDouble(centroid.split(" ")[1]);
+						double longitude = Double.parseDouble(centroid.split(" ")[0]);
+						double randomjitterx = -0.01 + (0.01 - (-0.01)) * new Random().nextDouble();
+						double randomjittery = -0.01 + (0.01 - (-0.01)) * new Random().nextDouble();
+						longitude =longitude+randomjitterx; 
+						latitude =latitude+randomjittery;
+						Pair laupair = new Pair(longitude, latitude);
+						
+						System.out.print(
+								"Event is being assigned the LAU coordinates -> " + laupair);
+
+						return laupair;
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			System.out.println("WARNING: NO LAU COORDINATES FOR CARD ID: "+card_id);
+		}
+		
+		return null;
+	}
+	
 	public String produceEventsLegacy() throws Exception {
 
 		for (String label : events.keySet()) {
