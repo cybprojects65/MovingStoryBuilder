@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.gcube.moving.nlphub.InvokeNLPHub;
+import org.gcube.moving.nlphub.NLPHubCaller;
 
 public class ObjectExtractor {
 	InvokeNLPHub nlphub = new InvokeNLPHub();
@@ -24,6 +25,10 @@ public class ObjectExtractor {
 	public LinkedHashSet<String> potentialgeoobjs = new LinkedHashSet<String>();
 	
 	public void extractObjects(String description) throws Exception{
+		
+		//NOTE: NLPHub only manages english chars, thus non english chars should be deleted when invoking the Hub
+		description = NLPHubCaller.compressStrangeCharacters(description);
+		
 		
 		File sha1 = new File("annotationcache/sha"+DigestUtils.sha1Hex(description)+".txt");
 		File sha1geo = new File("annotationcache/shageo"+DigestUtils.sha1Hex(description)+".txt");

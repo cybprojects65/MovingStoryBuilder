@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -271,14 +272,23 @@ public class NLPHubCaller {
 			throw e;
 		}
 	}
-
+	
+	
+	static char[] charsToSave = {'Ă','ă','ć','Ό','Č','č','А','Α','Δ','Ε','Η','ș','Ț','ț','Μ','Ν','Ο','ğ','Ρ','Τ','Υ','€','ά','έ','ή','ί','İ','α','ı','β','γ','δ','ε','η','ι','κ','λ','μ','ν','Ľ','ľ','ο','π','ρ','Á','ς','Â','σ','τ','υ','χ','Ç','ň','ω','ό','ύ','Î','Ş','ß','ş','Š','š','ţ','ű','Ž','ž'};
 	public static String cleanCharacters(String source) {
 
 		char c = 0;
 		for (int i = 0; i < source.length(); i++) {
 			c = source.charAt(i);
 			if (!((c >= 33 && c <= 90) || (c >= 97 && c <= 122) || (c >= 128 && c <= 167) || (c >= 180 && c <= 183) || (c >= 210 && c <= 212) || (c >= 214 && c <= 216) || (c >= 224 && c <= 255))) {
-				source = source.replace(source.substring(i, i + 1), " ");
+				boolean tosave = false;
+				for (char cts:charsToSave) {
+					if (c==cts)
+					{tosave = true;
+					break;}
+				}
+				if (!tosave)
+					source = source.replace(source.substring(i, i + 1), " ");
 			} else if (c == '&') {
 				source = source.replace(source.substring(i, i + 1), "and");
 			}
@@ -290,6 +300,59 @@ public class NLPHubCaller {
 		return source;
 	}
 	
+	public static String compressStrangeCharacters(String source) {
+
+		char c = 0;
+		for (int i = 0; i < source.length(); i++) {
+			c = source.charAt(i);
+			if (!((c >= 33 && c <= 90) || (c >= 97 && c <= 122) || (c >= 128 && c <= 167) || (c >= 180 && c <= 183) || (c >= 210 && c <= 212) || (c >= 214 && c <= 216) || (c >= 224 && c <= 255))) {
+				boolean tosave = false;
+				for (char cts:charsToSave) {
+					if (c==cts)
+					{tosave = true;
+					break;}
+				}
+				if (!tosave) {
+					source = source.replace(source.substring(i, i + 1), " ");
+				}else {
+					if (source.toLowerCase().contains("capita income"))
+						source = source.replace(source.substring(i, i + 1), " ");
+					else
+						source = source.replace(source.substring(i, i + 1), "");
+				}
+			} else if (c == '&') {
+				source = source.replace(source.substring(i, i + 1), "and");
+			}
+		}
+
+		source = source.replaceAll("[\\s]+", " ").trim();
+		source = source.replaceAll("<", " ").trim();
+		source = source.replaceAll(">", " ").trim();
+		return source;
+	}
+	
+	public static HashSet<Character> getStrangeCharacters(String source) {
+
+		char c = 0;
+		HashSet<Character> strange = new HashSet<>();
+		
+		for (int i = 0; i < source.length(); i++) {
+			c = source.charAt(i);
+			if (!((c >= 33 && c <= 90) || (c >= 97 && c <= 122) || (c >= 128 && c <= 167) || (c >= 180 && c <= 183) || (c >= 210 && c <= 212) || (c >= 214 && c <= 216) || (c >= 224 && c <= 255))) {
+				boolean tosave = false;
+				for (char cts:charsToSave) {
+					if (c==cts)
+					{tosave = true;
+					break;}
+				}
+				if (!tosave)
+					strange.add(c);
+			} else if (c == '&') {
+			}
+		}
+
+		return strange;
+	}
 	
 	public static String readXMLDoc(String xmlFilePath) throws Exception {
 		String xml = null;

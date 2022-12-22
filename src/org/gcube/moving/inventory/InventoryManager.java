@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashSet;
 import java.util.List;
 
 import org.gcube.moving.nlphub.NLPHubCaller;
@@ -19,7 +20,9 @@ public class InventoryManager {
 		ValueChain.simulatecoordinates = false;
 		//NOTES ON DATA PREPARATION: DELETE COMMAS IN THE COLUMN NAMES : "100," AND ", its specificity" 
 		//try (CSVReader reader = new CSVReader(new FileReader("Dataset_VC card_Inventory_102021_db_updated01122021.csv"))) {
+		HashSet<Character> strangecharacters = new HashSet<>();
 		try (CSVReader reader = new CSVReader(new FileReader("MOVING_VCs_DATASET_FINAL_V2.csv"))) {
+			
 			  String header = "";
 			    
 		      List<String[]> r = reader.readAll();
@@ -38,6 +41,8 @@ public class InventoryManager {
 		    	  int i = 0;
 		    	for (String rowi:row) {
 		    		row[i] = NLPHubCaller.cleanCharacters(rowi).replace("\"", "'");
+		    		HashSet<Character> str = NLPHubCaller.getStrangeCharacters(rowi);
+		    		strangecharacters.addAll(str);
 		    		//System.out.println("Row"+i+" : "+row[i]);
 		    		i++;
 		    	}
@@ -53,6 +58,9 @@ public class InventoryManager {
 		    		}
 		    	}
 		    	else {
+		    		//if (j==240)
+		    		{
+		    			
 		    		System.out.println("####STORY NUMBER "+j+" OF "+r.size()+"####");
 		    		
 		    		System.out.println("###BUILDING STORY BASED ON THE CSV ROW###");
@@ -84,6 +92,7 @@ public class InventoryManager {
 					long t1 = System.currentTimeMillis();
 					double elapsed = (double)(t1-t0)/(60*1000);
 					System.out.println("ELAPSED TIME TO BUILD STORY "+j+":"+elapsed+" min");
+		    		}
 		    	}
 		    		
 		    	j++;
@@ -92,6 +101,8 @@ public class InventoryManager {
 		      }
 		      
 		  }
+		
+		System.out.println("Detected strange chars :"+strangecharacters);
 		
 	}
 }

@@ -122,6 +122,8 @@ public class CoordinateDistributor {
 
 			// get the first unseen or lowly seen before
 			int counter = 0;
+			/*
+			
 			for (Pair candidate : allCoordinates) {
 				
 				if (allCoordinatesFitness.get(counter)) {
@@ -134,6 +136,7 @@ public class CoordinateDistributor {
 				
 				counter++;
 			}
+			*/
 			
 			//if we did not find any unseen coordinate, assign the most common one
 			int highestoccs = 0;
@@ -154,11 +157,14 @@ public class CoordinateDistributor {
 			
 			double randomjittery = -0.1 + (0.1 - (-0.1)) * new Random().nextDouble();
 			
+			System.out.print(
+					"Event '" + title + "' is being assigned the most common coordinates -> " + highestPair + " (n. occurr. " + highestoccs + ")");
+			
 			highestPair.longitude =highestPair.longitude+randomjitterx; 
 			highestPair.latitude =highestPair.latitude+randomjittery;
 			
 			System.out.println(
-					"Event '" + title + "' is being assigned the most common coordinates -> " + highestPair + " (n. occurr. " + highestoccs + ")");
+					" with jitter "+ highestPair);
 			
 			return new Pair(highestPair.longitude, highestPair.latitude);
 
