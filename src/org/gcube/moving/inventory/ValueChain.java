@@ -200,10 +200,12 @@ public class ValueChain {
 			Event e = events.get(label);
 			//check if LAU coords exist
 			Pair bestPair =getLAUCoordinates();
-			if (bestPair ==null)
+			if (bestPair ==null) {
+				System.out.println("ERROR: NO LAU COORDINATES for "+label+"!!!");
+				System.exit(0);
 				bestPair = e.assignRedistributedCoordinates(allCoordinates, allCoordinatesFitness,
 					assignedCoordinates);
-			else {
+			}else {
 				if (e.longitude == 0 && e.latitude == 0) {
 					e.assignCoordinates(bestPair.longitude,bestPair.latitude);
 				}
@@ -237,12 +239,15 @@ public class ValueChain {
 
 	public Pair getLAUCoordinates() {
 		try {
+			
 			List<String> allLAUs = Files.readAllLines(new File("LAU_per_story.csv").toPath());
 			for (String allLAURecord:allLAUs) {
 				if (allLAURecord.length()>0) {
 					String cardID_entry = allLAURecord.split(",")[1];
 					cardID_entry = NLPHubCaller.cleanCharacters(cardID_entry).replace("\"", "'");
 					cardID_entry = cardID_entry.trim();
+					if (card_id.equals("VC 30 IT"))
+						System.out.println("->"+cardID_entry);
 					
 					if (cardID_entry.equals(card_id)) {
 						String centroid = allLAURecord.substring(allLAURecord.indexOf("POINT "));

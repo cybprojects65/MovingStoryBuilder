@@ -292,6 +292,9 @@ public class Event {
 
 		for (String obj : associatedObjects) {
 			if (obj.length() > 2) {
+				//patch for erroneous entities
+				if (obj.toLowerCase().equals("tours"))
+					continue;
 				// get link
 				WikidataExplorer we = new WikidataExplorer();
 				String uri = we.queryWikidata(obj);
