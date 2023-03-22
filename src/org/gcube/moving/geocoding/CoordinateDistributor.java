@@ -153,9 +153,14 @@ public class CoordinateDistributor {
 				counter++;
 			}
 
-			double randomjitterx = -0.1 + (0.1 - (-0.1)) * new Random().nextDouble();
+			//double randomjitterx = -0.1 + (0.1 - (-0.1)) * new Random().nextDouble();
 			
-			double randomjittery = -0.1 + (0.1 - (-0.1)) * new Random().nextDouble();
+			//double randomjittery = -0.1 + (0.1 - (-0.1)) * new Random().nextDouble();
+			
+			double randomjitterx = 0;
+			
+			double randomjittery = 0;
+			
 			
 			System.out.print(
 					"Event '" + title + "' is being assigned the most common coordinates -> " + highestPair + " (n. occurr. " + highestoccs + ")");

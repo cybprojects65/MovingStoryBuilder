@@ -257,10 +257,10 @@ public class ValueChain {
 						centroid = centroid.trim();
 						double latitude = Double.parseDouble(centroid.split(" ")[1]);
 						double longitude = Double.parseDouble(centroid.split(" ")[0]);
-						double randomjitterx = -0.01 + (0.01 - (-0.01)) * new Random().nextDouble();
-						double randomjittery = -0.01 + (0.01 - (-0.01)) * new Random().nextDouble();
-						longitude =longitude+randomjitterx; 
-						latitude =latitude+randomjittery;
+						//double randomjitterx = -0.01 + (0.01 - (-0.01)) * new Random().nextDouble();
+						//double randomjittery = -0.01 + (0.01 - (-0.01)) * new Random().nextDouble();
+						//longitude =longitude+randomjitterx; 
+						//latitude =latitude+randomjittery;
 						Pair laupair = new Pair(longitude, latitude);
 						
 						System.out.print(
