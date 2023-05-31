@@ -30,7 +30,7 @@ public class InventoryManager {
 		      for (String[] row:r) {
 		    	/*debugging*/
 		    	  /*
-		    	  if (j>0 && j!=1)
+		    	  if (j>0 && j!=137)
 		    	  {
 		    		  j++;
 		    		  continue;

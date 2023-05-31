@@ -1,16 +1,19 @@
 package org.gcube.moving.geocoding;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.gcube.moving.semantic.WikidataExplorer;
 import org.gcube.moving.utils.Pair;
 
 public class CoordinateDistributor {
 
 	public Pair decideBestCoordinates(List<Pair> allCoordinates, List<Boolean> allCoordinatesFitness,
-			List<Pair> assignedCoordinates, List<Pair> eventCoordinates, String title) {
-
+			List<Pair> assignedCoordinates, List<Pair> eventCoordinates, String title, LinkedHashSet<String> associatedObjects, String description) {
+		
 		// if empty, assign the most common coordinate with a high score
 		if (eventCoordinates.size() == 0 || (eventCoordinates.size() == 1 && eventCoordinates.get(0).longitude == 0
 				&& eventCoordinates.get(0).latitude == 0)) {
@@ -32,7 +35,47 @@ public class CoordinateDistributor {
 			
 			if (goodCandidates.size() == 0)
 					return new Pair(0, 0);
+			
+			System.out.println("#Coordinate Processing of event: "+title);
+			
+			int lowestoccs = 0;
+			Pair lowestPair = null;
+
+			List<Integer> goodCandidatesNocc = new ArrayList();
+			//take the most characteristic place
+			for (Pair candidate : goodCandidates) {
+
+				//int nocc = Pair.contains(allCoordinates, candidate);
+				String correspondingText = "###########";
+				for (String obj:associatedObjects) {
+					WikidataExplorer we = new WikidataExplorer();
+					Pair p;
+					try {
+						p = we.getCoordinates(obj);
+						if (p!= null && p.longitude == candidate.longitude && p.latitude == candidate.latitude) {
+							correspondingText = obj;
+							break;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				int nocc = 0;
+				Pattern pat = Pattern.compile(".*?\\b"+correspondingText+"\\b.*?");
+				Matcher patmatcher = pat.matcher(description.toLowerCase());
 				
+				while (patmatcher.find()) {
+				    nocc++;
+				}
+				System.out.println("Matches of "+correspondingText+" ("+candidate+") : "+nocc);
+				goodCandidatesNocc.add(nocc);
+				if (nocc > lowestoccs) {
+					lowestoccs = nocc;
+					lowestPair = new Pair(candidate.longitude, candidate.latitude);
+				}
+			}
+			return new Pair(lowestPair.longitude, lowestPair.latitude);
+			/* Previous code: //take the most characteristic place
 			int lowestoccs = allCoordinates.size();
 			Pair lowestPair = null;
 
@@ -109,7 +152,7 @@ public class CoordinateDistributor {
 				}
 
 				return new Pair(lowestPair.longitude, lowestPair.latitude);
-			}
+			}*/
 
 		}
 	}

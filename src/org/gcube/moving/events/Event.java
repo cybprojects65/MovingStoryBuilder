@@ -147,7 +147,7 @@ public class Event {
 	public Pair decideBestCoordinatesWithRedistribution(List<Pair> allCoordinates, List<Boolean> allCoordinatesFitness,
 			List<Pair> assignedCoordinates) {
 		CoordinateDistributor cd = new CoordinateDistributor();
-		Pair best = cd.decideBestCoordinates(allCoordinates, allCoordinatesFitness, assignedCoordinates, candidateCoordinates, title);
+		Pair best = cd.decideBestCoordinates(allCoordinates, allCoordinatesFitness, assignedCoordinates, candidateCoordinates, title, associatedObjects, description);
 		assignCoordinates(best.longitude,best.latitude);
 		return best; 
 	}
