@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class InvokeNLPHub {
 
-	static String dataMinerURL = "dataminer-prototypes.d4science.org";
+	static String dataMinerURL = "dataminer-prototypes.cloud.d4science.org";
 	static String token = "fea75a5a-d84c-495f-b0ca-09cdd95bacce-843339462"; //statistical.manager
 	public LinkedHashMap<String,Set<String>> allEntities = new LinkedHashMap<>();
 	public LinkedHashMap<String,Set<String>> potentialGeospatialEntities = new LinkedHashMap<>();
