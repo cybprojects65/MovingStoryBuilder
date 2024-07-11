@@ -32,9 +32,11 @@ Clone the GitHub repository
 git clone https://github.com/cybprojects65/MovingStoryBuilder.git
 ```
 
-Install Java 1.8
+Install Java 1.8.
 
-Import the project into Eclipse ("import project from folder or archive")
+Import the project into Eclipse ("import project from folder or archive").
+
+Create the "annotationcache" local folder in the project folder.
 
 Check that the input dataset is in the root folder of the project.
 
