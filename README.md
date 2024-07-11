@@ -36,7 +36,13 @@ Install Java 1.8.
 
 Import the project into Eclipse ("import project from folder or archive").
 
-Create the "annotationcache", "wikidatacache",  "stories" local folder in the project folder.
+Create the following local folders in the project folder:
+
+```sh
+"annotationcache"
+"wikidatacache"
+"stories" 
+```
 
 Check that the input dataset is in the root folder of the project.
 
