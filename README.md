@@ -14,7 +14,9 @@ This project was developed with Java [JDK-1.8](https://www.oracle.com/it/java/te
 
 Accessory libraries are available in the lib folder and in the Maven POM.
 
-The software requires internet connection to invoke the NLPHub and the Wikidata SPARQL endpoint.
+The software requires internet connection to invoke the NLPHub and the Wikidata SPARQL endpoint. 
+
+**Important: The NLPHub performance may vary depending on the connected service availability and accessibility.**
 ## Data explanation
 
 - [Example of annotations produced by the NLP Hub](https://github.com/cybprojects65/MovingStoryBuilder/blob/main/Annotations_example.txt)
