@@ -10,7 +10,7 @@ This is a Java project for generating stories for the MOVING project out of a CS
 
 ## Prerequisites
 
-This project was developed with Java [JDK-1.8](https://www.oracle.com/it/java/technologies/javase/javase8u211-later-archive-downloads.html).
+This project was developed with Java [JDK-1.8](https://www.oracle.com/it/java/technologies/javase/javase8u211-later-archive-downloads.html) and the [Eclipse IDE](https://www.eclipse.org/downloads/download.php?file=/oomph/epp/2024-06/R/eclipse-inst-jre-win64.exe) on a Linux-Ubuntu 18.4 machine.
 
 Accessory libraries are available in the lib folder and in the Maven POM.
 
@@ -26,10 +26,13 @@ The software requires internet connection to invoke the NLPHub and the Wikidata 
 ## How to run
 
 Clone the GitHub repository
+```sh
+git clone https://github.com/cybprojects65/MovingStoryBuilder.git
+```
 
 Install Java 1.8
 
-Import the project into Eclipse
+Import the project into Eclipse ("import project from folder or archive")
 
 Check that the input dataset is in the root folder of the project.
 
@@ -45,6 +48,8 @@ If necessary, change the input data location at line 24:
 
 Run "InventoryManager" (the main method will be executed) from Eclipse
 ```
+Notes for Windows users: change the MOVING_VCs_DATASET_FINAL_V2.csv to ANSI text coding; change the NLPHubCaller resouce properties to UTF-8.
+
 
 ## Authors
 
